@@ -26,6 +26,11 @@ jobs:
         run: |
           pip install mlflow
 
+      - name: Prepare output dir
+        working-directory: MLProject
+        run: |
+          mkdir -p outputs
+
       - name: Run MLflow Project
         working-directory: MLProject
         shell: bash -l {0}
