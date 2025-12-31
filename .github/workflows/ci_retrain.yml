@@ -20,7 +20,6 @@ jobs:
         with:
           auto-update-conda: true
           python-version: "3.10"
-          activate-environment: ecommerce_churn_env
 
       - name: Install MLflow
         shell: bash -l {0}
