@@ -5,7 +5,7 @@ on:
   push:
     paths:
       - "MLProject/**"
-      - ".github/workflows/**"
+      - "workflows/**"
 
 jobs:
   retrain:
@@ -40,4 +40,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: retrain-artifacts
+
           path: MLProject/outputs
