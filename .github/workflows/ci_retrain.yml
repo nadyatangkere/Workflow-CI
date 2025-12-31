@@ -25,13 +25,15 @@ jobs:
         shell: bash -l {0}
         run: |
           pip install mlflow
-
+          mlflow --version
+          
       - name: Prepare output dir
         working-directory: MLProject
         run: |
           mkdir -p outputs
 
       - name: Run MLflow Project
+        shell: bash -l {0}
         run: |
           mlflow run MLProject \
             -P preproc_dir=namadataset_preprocessing \
