@@ -32,6 +32,13 @@ jobs:
         run: |
           mkdir -p outputs
 
+      - name: Ensure preprocessing files exist
+        shell: bash -l {0}
+        run: |
+          mkdir -p namadataset_preprocessing
+          test -f namadataset_preprocessing/target_name.txt || echo "Churned" > namadataset_preprocessing/target_name.txt
+
+
       - name: Run MLflow Project
         shell: bash -l {0}
         run: |
