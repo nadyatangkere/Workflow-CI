@@ -32,10 +32,13 @@ jobs:
           mkdir -p outputs
 
       - name: Run MLflow Project
-        working-directory: MLProject
-        shell: bash -l {0}
         run: |
-          mlflow run . -P preproc_dir=../namadataset_preprocessing -P out_dir=outputs
+          mlflow run MLProject \
+            -P preproc_dir=namadataset_preprocessing \
+            -P tracking_uri=file:./mlruns \
+            -P experiment_name=CI_Retrain_Autolog \
+            -P seed=42
+
 
 
       - name: Upload artifacts
