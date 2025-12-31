@@ -1,0 +1,43 @@
+name: Retrain MLflow Project (CI)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "MLProject/**"
+      - ".github/workflows/**"
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+
+      - name: Install MLflow (and conda build tools)
+        shell: bash -l {0}
+        run: |
+          conda --version
+          python --version
+          pip install -U pip
+          pip install mlflow
+          # Untuk memastikan MLflow bisa membuat env dari conda.yaml
+          conda install -y conda-build
+
+      - name: Run MLflow Project
+        shell: bash -l {0}
+        run: |
+          cd MLProject
+          mlflow run . -P preproc_dir=namadataset_preprocessing -P out_dir=outputs
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: retrain-artifacts
+          path: MLProject/outputs
