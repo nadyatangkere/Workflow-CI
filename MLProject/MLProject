@@ -6,15 +6,12 @@ entry_points:
   main:
     parameters:
       preproc_dir: {type: path}
-      out_dir: {type: string, default: outputs}
+      tracking_uri: {type: string, default: "file:./mlruns"}
+      experiment_name: {type: string, default: "CI_Retrain_Autolog"}
       seed: {type: int, default: 42}
-      C: {type: float, default: 3.0}
-      max_iter: {type: int, default: 1000}
     command: >
       python modelling.py
       --preproc_dir {preproc_dir}
-      --out_dir {out_dir}
+      --tracking_uri {tracking_uri}
+      --experiment_name {experiment_name}
       --seed {seed}
-      --C {C}
-
-      --max_iter {max_iter}
