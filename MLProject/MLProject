@@ -6,7 +6,7 @@ entry_points:
   main:
     parameters:
       preproc_dir: {type: path}
-      out_dir: {type: path, default: outputs}
+      out_dir: {type: string, default: outputs}
       seed: {type: int, default: 42}
       C: {type: float, default: 3.0}
       max_iter: {type: int, default: 1000}
@@ -16,4 +16,5 @@ entry_points:
       --out_dir {out_dir}
       --seed {seed}
       --C {C}
+
       --max_iter {max_iter}
