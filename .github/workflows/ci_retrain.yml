@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "MLProject/**"
+      - "namadataset_preprocessing/**"
       - ".github/workflows/**"
 
 jobs:
@@ -20,38 +21,43 @@ jobs:
         with:
           auto-update-conda: true
           python-version: "3.10"
+          activate-environment: ecommerce_churn_env
 
-      - name: Install MLflow
+      # Penting: pastikan pip install masuk ke env conda aktif
+      - name: Install dependencies
         shell: bash -l {0}
         run: |
-          pip install mlflow
-          mlflow --version
-          
-      - name: Prepare output dir
-        working-directory: MLProject
-        run: |
-          mkdir -p outputs
+          pip install -r MLProject/requirements.txt || true
+          pip install mlflow pandas numpy scikit-learn joblib matplotlib
 
-      - name: Ensure preprocessing files exist
+      - name: Verify preprocessing files exist
         shell: bash -l {0}
         run: |
-          mkdir -p namadataset_preprocessing
-          test -f namadataset_preprocessing/target_name.txt || echo "Churned" > namadataset_preprocessing/target_name.txt
+          ls -lah namadataset_preprocessing
+          test -f namadataset_preprocessing/customer_churn_train.csv
+          test -f namadataset_preprocessing/customer_churn_test.csv
+          test -f namadataset_preprocessing/target_name.txt
 
+      - name: Prepare tracking dir
+        shell: bash -l {0}
+        run: |
+          mkdir -p mlruns
 
       - name: Run MLflow Project
         shell: bash -l {0}
+        env:
+          MLFLOW_TRACKING_URI: file:${{ github.workspace }}/mlruns
         run: |
           mlflow run MLProject \
-            -P preproc_dir=namadataset_preprocessing \
-            -P tracking_uri=file:./mlruns \
+            -P preproc_dir=${{ github.workspace }}/namadataset_preprocessing \
+            -P tracking_uri=file:${{ github.workspace }}/mlruns \
             -P experiment_name=CI_Retrain_Autolog \
             -P seed=42
 
-
-
-      - name: Upload artifacts
+      - name: Upload artifacts (mlruns + outputs if any)
         uses: actions/upload-artifact@v4
         with:
           name: retrain-artifacts
-          path: MLProject/outputs
+          path: |
+            mlruns
+            MLProject/outputs
