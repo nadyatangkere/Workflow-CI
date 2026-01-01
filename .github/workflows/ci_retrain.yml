@@ -38,26 +38,29 @@ jobs:
           test -f namadataset_preprocessing/customer_churn_test.csv
           test -f namadataset_preprocessing/target_name.txt
 
-      - name: Prepare tracking dir
+      - name: Prepare tracking db
         shell: bash -l {0}
         run: |
-          mkdir -p mlruns
+          rm -f mlflow.db
+          echo "tracking db ready"
 
       - name: Run MLflow Project
         shell: bash -l {0}
         env:
-          MLFLOW_TRACKING_URI: file:${{ github.workspace }}/mlruns
+          MLFLOW_TRACKING_URI: sqlite:///${{ github.workspace }}/mlflow.db
         run: |
           mlflow run MLProject \
             -P preproc_dir=${{ github.workspace }}/namadataset_preprocessing \
-            -P tracking_uri=file:${{ github.workspace }}/mlruns \
+            -P tracking_uri=sqlite:///${{ github.workspace }}/mlflow.db \
             -P experiment_name=CI_Retrain_Autolog \
             -P seed=42
 
-      - name: Upload artifacts (mlruns + outputs if any)
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: retrain-artifacts
           path: |
-            mlruns
+            mlflow.db
             MLProject/outputs
+
