@@ -1,12 +1,11 @@
 name: ecommerce_churn_retrain
-
 conda_env: conda.yaml
 
 entry_points:
   main:
     parameters:
       preproc_dir: {type: path}
-      tracking_uri: {type: string, default: "file:./mlruns"}
+      tracking_uri: {type: string, default: "sqlite:///mlflow.db"}
       experiment_name: {type: string, default: "CI_Retrain_Autolog"}
       seed: {type: int, default: 42}
     command: >
