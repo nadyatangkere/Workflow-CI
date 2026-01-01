@@ -28,31 +28,25 @@ def load_processed(preproc_dir: Path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--preproc_dir", required=True)
-    ap.add_argument("--tracking_uri", default="sqlite:///mlflow.db")
-    ap.add_argument("--experiment_name", default="CI_Retrain_Autolog")
     ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
 
-    mlflow.set_tracking_uri(args.tracking_uri)
-    mlflow.set_experiment(args.experiment_name)
+    mlflow.sklearn.autolog(log_models=True)
 
     X_train, y_train, X_test, y_test, target_col = load_processed(Path(args.preproc_dir))
 
-    # BASIC: autolog
-    mlflow.sklearn.autolog(log_models=True)
+    mlflow.set_tag("target", target_col)
+    mlflow.set_tag("stage", "ci_retrain")
 
-    with mlflow.start_run(run_name="ci_retrain_logreg_autolog"):
-        mlflow.set_tag("target", target_col)
-        model = LogisticRegression(
-            C=1.0,
-            penalty="l2",
-            solver="liblinear",
-            max_iter=1000,
-            random_state=args.seed
-        )
-        model.fit(X_train, y_train)
+    model = LogisticRegression(
+        C=1.0,
+        penalty="l2",
+        solver="liblinear",
+        max_iter=1000,
+        random_state=args.seed
+    )
+    model.fit(X_train, y_train)
 
 
 if __name__ == "__main__":
-
     main()
