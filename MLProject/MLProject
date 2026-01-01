@@ -6,8 +6,10 @@ entry_points:
   main:
     parameters:
       preproc_dir: {type: path}
+      tracking_uri: {type: string}
       seed: {type: int, default: 42}
     command: >
       python modelling.py
       --preproc_dir {preproc_dir}
+      --tracking_uri {tracking_uri}
       --seed {seed}
