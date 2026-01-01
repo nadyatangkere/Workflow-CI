@@ -28,7 +28,7 @@ def load_processed(preproc_dir: Path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--preproc_dir", required=True)
-    ap.add_argument("--tracking_uri", default="file:./mlruns")
+    ap.add_argument("--tracking_uri", default="sqlite:///mlflow.db")
     ap.add_argument("--experiment_name", default="CI_Retrain_Autolog")
     ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
@@ -54,4 +54,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
