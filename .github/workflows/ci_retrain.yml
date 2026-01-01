@@ -46,15 +46,10 @@ jobs:
 
       - name: Run MLflow Project
         shell: bash -l {0}
-        env:
-          MLFLOW_TRACKING_URI: sqlite:///${{ github.workspace }}/mlflow.db
         run: |
           mlflow run MLProject \
             -P preproc_dir=${{ github.workspace }}/namadataset_preprocessing \
-            -P tracking_uri=sqlite:///${{ github.workspace }}/mlflow.db \
-            -P experiment_name=CI_Retrain_Autolog \
             -P seed=42
-
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
